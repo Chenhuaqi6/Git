@@ -1,0 +1,158 @@
+1.版本管理工具
+    1.什么是版本控制(Revision Control)
+        -项目文档包含:源码,文档(需求,设计,会议纪要,厂商联系方式),软件包
+        -对各种软件所涉及到的文件进行管理,控制,变更记录,追溯
+        -什么时候,什么人,修改了什么文件,什么内容完整记录下来
+            配置管理岗:专门进行配置管理
+        -解决什么问题
+          -版本管理规范性
+          -解决版本更新,冲突
+          -协调不同的开发者的变更,提高协同开发的效率
+        
+        -版本管理的相关术语
+          -检出: 将软件配置(文件)从配置库中提取出来
+          -检入: 将软件配置项(文件)放回配置库
+          -主干版本:标准配置库
+          -分支版本:为了某些特殊的要求
+                   和主干版本有差异的配置库
+          -合并:
+             -A.B 俩个版本 将A的内容附加到B中
+             -A,B俩个版本 A和B 合并形成新版本C
+          
+          -历史记录:
+                文件变更的详细过程
+          -回滚:将配置退回到之前的某个状态
+    2.版本管理方式
+        a)集中式管理
+            -配置库集中存放于中央服务器
+            -变更之前,先从中央服务器取得最新版本,然后进行变更,修改
+            -修改完成后,将变更提交到中央服务器
+            -缺点:集中式存放,必须联网,速度较慢
+            -典型工具:SVN
+        b)分布式
+            -没有中央服务器
+            -每个开发人员电脑都是有个完整配置库
+            -配置库位于本地,所以不一定需要联网
+            -每个开发者.可以将自己的代码贡献到其他开发者仓库中
+            -典型工具:git
+    2.git: 分布式配置管理工具
+        1.更适合个人开发,管理配置库
+        2.分布式管理,不同svn的集中式管理
+        3.支持强大的分支功能
+        4.完整性优于svn 
+    3.git 安装 sudo apt-get install git
+
+
+    4git 配置
+        1./etc/gitconfig 文件 作用于系统所有用户
+        2.~/.gitconfig文件:用户目录下 作用于当前用户
+        3.工作目录下.git/config文件 作用于当前目录
+        优先级:工作目录>用户配置>系统配置
+        4.配置示例
+            -git config --global user.name github账号
+            -git config --global user.email 邮箱
+
+            查看:cat ~/.gitconfig
+
+            查看已有配置:git config --list
+        5.基本命令
+            1> init:
+                第一步:创建目录:
+                cd ~  #进入用户主目录
+                
+                mkdir gittest #新建一个空目录
+                cd gittest 
+                git init #初始化,成功后当前会多出.git隐藏目录
+            2>add:添加文件内容至索引
+                vim a.txt  #新建文本文件
+                git add a.txt #将a.txt添加到仓库中
+                git status #查看当前目录状态
+
+            3>commit: 提交变更至本地仓库
+                git commit 文件名 -m 注释信息
+                    eg:git commit a.txt -m "create" #必须写注释
+            
+            4>diff:查看工作目录和仓库文件差异
+                例如:git diff a.txt
+            
+            5>reset:版本的回滚
+                git reset --hard HEAD^ 回退到上一个版本
+                git reset --hard HEAD^^ 回退到上上一个版本
+                git reset --hard HEAD~n 回退到前面第n个版本
+
+
+            6>分支管理
+                1.分支版本:有别与主版本 列如开发版 某个定制版
+                2.分支操作
+                    -查看所有分支: git branch
+                        列出所有版本,带*表示当前所在分支
+                    -创建分支版本
+                        git branch 分支版本的名称
+                            eg: git branch dev #创建名称为dev的分支版本
+                    -切换分支版本
+                        git checkout 分支版本名称
+                            eg: git checkout dev #切换到dev分支下
+                        
+                    -创建并且换分支
+                        git checkout -b beta  #创建并切换到beta分支下
+
+                        git checkout a.txt #本地删除后,可以从仓库拿出
+                    -版本合并
+                        git merge beta #把beta版本合并到当前分支
+
+                        第一步:先进入beta分支
+                                git checkout beta
+                        第二步:修改a.txt,并提交(提交到beta分支)
+                        第三步:切换到dev分支
+                                git checkout dev
+                        第四步:执行合并
+                                git merge beta #把beta分支合并到当前分支
+                -删除分支
+                    git branch -d beta
+                    删除beta分支,如果没有合并则不允许删除
+            7>标签管理
+               1>如果达到一个重要节点,并希望永远记住那个提交的快照,可以使用标签
+               2>标签可以理解成一个指向某次提交的指针,但不能移动
+               3>标签命令: git tag 标签名称 例如:
+                            git tag v1.0  #将v1.0标签打到最新版本上
+
+                            git tag  查看所有标签
+                            git tag v0.9 7dec43f(提交编号) #将v0.9标签打到7dec43f这个版本上
+
+                            git reset --hard v0.9 #退回到v0.9标签状态
+            
+            8.github远程仓库
+                第一步:在gitee或github上注册账户
+                第二步:创建项目,并且拷贝地址
+                第三步:在工作目录下加入远程仓库地址
+                    git remote add 名称 远程仓库地址
+                    例如:
+                        git remote add gitee https://gitee.com/chenhuaqiY/git_test.git
+                第四步:从远程仓库获取配置库
+                    git pull 远程仓库名称 分支版本名称
+                        例如:git pull gitee master
+                第五步:修改工作目录文件,并且提交到本地仓库
+                    添加文件到本地仓库 
+                    git add . (所有文件)
+                    例如:修改a.txt后 执行提交
+                        git commit a.txt -m "remote test"
+                第六步:推送到远程仓库
+                    git push -u 远程仓库名称 分支版本
+                        例如:git push -u gitee master
+                           *推送到gitee仓库的master分支下
+                如果已初始化仓库
+                    git add .
+                    git commit -m "修改内容"
+                    git push -u 库名 master
+
+9.调试工具
+    1.程序调试(debug)
+    2.调试工具:提高调试效率的工具
+              一般都能单步,打印变量,观察内部执行过程
+    3.pdb:python自带的调试工具
+    4.使用:
+        启动调试:pdb3.5 test.py #对test.py调试
+        l 或 list:查看当前代码段
+        n 或 next 执行下一行
+        b 或 break 打断点
+            例如: b 10 或 break 10 #在第10行打断点
