@@ -121,6 +121,8 @@
 
                             git reset --hard v0.9 #退回到v0.9标签状态
             
+                git clone  将远程仓库中所有文件克隆到本地仓库
+
             8.github远程仓库
                 第一步:在gitee或github上注册账户
                 第二步:创建项目,并且拷贝地址
@@ -154,5 +156,8 @@
         启动调试:pdb3.5 test.py #对test.py调试
         l 或 list:查看当前代码段
         n 或 next 执行下一行
+        进入函数内部单步 n 或 next
         b 或 break 打断点
             例如: b 10 或 break 10 #在第10行打断点
+        p 或 print 打印变量
+
